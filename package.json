@@ -1,0 +1,22 @@
+{
+  "name": "udemybackendstudy",
+  "version": "1.0.0",
+  "description": "### 100일 코딩 첼린지  ### 강사: Maximilian Schwarzmüller",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebKBS/UdemyBackendStudy.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WebKBS/UdemyBackendStudy/issues"
+  },
+  "homepage": "https://github.com/WebKBS/UdemyBackendStudy#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
