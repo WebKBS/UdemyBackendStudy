@@ -22,16 +22,33 @@ app.post("/store-user", (req, res) => {
   const userName = req.body.username;
   //console.log(userName);
 
-  const filePath = path.join(__dirname, "data", "users.json");
+  const filePath = path.join(__dirname, "data", "users.json"); // 파일을 불러옴
 
-  const fileData = fs.readFileSync(filePath);
-  const existingUsers = JSON.parse(fileData);
+  const fileData = fs.readFileSync(filePath); // 파일을 읽음
+  const existingUsers = JSON.parse(fileData); // json파일로 변환
 
   existingUsers.push(userName);
 
   fs.writeFileSync(filePath, JSON.stringify(existingUsers));
 
   res.send("<h1>UserName Success!</h1>");
+});
+
+app.get("/users", (req, res) => {
+  const filePath = path.join(__dirname, "data", "users.json");
+
+  const fileData = fs.readFileSync(filePath);
+  const existingUsers = JSON.parse(fileData);
+
+  let responseData = "<ul>";
+
+  for (const user of existingUsers) { 
+    responseData += "<li>" + user + "</li>"; 
+  }// 엘리먼트를 만들고 json데이터를 파싱
+
+  responseData += "</ul>";
+
+  res.send(responseData);
 });
 
 app.listen(3000);
