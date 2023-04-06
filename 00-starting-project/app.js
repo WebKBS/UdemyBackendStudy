@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const app = express();
 
+app.use(express.static("public")); // css 및 javascript를 사용하려면 반드시 써줘야한다.
+
 app.get("/", (req, res) => {
   const htmlFilePath = path.join(__dirname, "views", "index.html");
   res.sendFile(htmlFilePath);
