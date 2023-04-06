@@ -13,7 +13,7 @@ app.get("/currenttime", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send(
-    "<form action='/store-user' method='POST'><label>Your Name</label><input type='text' name='username'><button>Submit</button></form>"
+    "<form action='/store-user' method='POST'><label>Your Name: </label><input type='text' name='username'><button>Submit</button></form>"
   );
 });
 
@@ -42,9 +42,9 @@ app.get("/users", (req, res) => {
 
   let responseData = "<ul>";
 
-  for (const user of existingUsers) { 
-    responseData += "<li>" + user + "</li>"; 
-  }// 엘리먼트를 만들고 json데이터를 파싱
+  for (const user of existingUsers) {
+    responseData += "<li>" + user + "</li>";
+  } // 엘리먼트를 만들고 json데이터를 파싱
 
   responseData += "</ul>";
 
