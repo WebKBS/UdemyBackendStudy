@@ -1,16 +1,1 @@
-[
-  {
-    "name": "break",
-    "address": "서울특별시 강남구 신사동 557-18",
-    "cuisine": "ESL",
-    "website": "https://Hello.com",
-    "description": "Hello world"
-  },
-  {
-    "name": "break2",
-    "address": "서울 도봉구 해등로 13",
-    "cuisine": "Test",
-    "website": "https://Test.com",
-    "description": "Hello world Test"
-  }
-]
+[{"name":"break","address":"서울특별시 강남구 신사동 557-18","cuisine":"ESL","website":"https://Hello.com","description":"Hello world"},{"name":"break2","address":"서울 도봉구 해등로 13","cuisine":"Test","website":"https://Test.com","description":"Hello world Test"},{"name":"Restaurant 3","address":"HEmmll","cuisine":"Cgeans","website":"http://Hello.com","description":"HElll"}]
