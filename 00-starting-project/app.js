@@ -32,6 +32,12 @@ app.get("/restaurants", (req, res) => {
   });
 });
 
+app.get("/restaurants/:id", (req, res) => {
+  // 아이디 설정한 페이지
+  const restaurantId = req.params.id; // .id는 :id와 이름이 같아야한다.
+  res.render("restaurants-detail", { rid: restaurantId });
+});
+
 app.get("/recommend", (req, res) => {
   // const htmlFilePath = path.join(__dirname, "views", "recommend.html");
   // res.sendFile(htmlFilePath);
