@@ -26,5 +26,12 @@
     "cuisine": "Test",
     "website": "https://naver.com",
     "description": "Test TEST"
+  },
+  {
+    "name": "Missa",
+    "address": "서울 성북구 낙산길 243-15",
+    "cuisine": "JEssy",
+    "website": "http://google.com",
+    "description": "Hi Every one"
   }
 ]
