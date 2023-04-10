@@ -4,6 +4,7 @@ const path = require("path");
 const express = require("express");
 
 const app = express();
+const uuid = require("uuid");
 
 app.set("views", path.join(__dirname, "views")); // 사용할 폴더 이름 지정
 app.set("view engine", "ejs"); // ejs사용 하겠다는 set 지정
@@ -35,7 +36,16 @@ app.get("/restaurants", (req, res) => {
 app.get("/restaurants/:id", (req, res) => {
   // 아이디 설정한 페이지
   const restaurantId = req.params.id; // .id는 :id와 이름이 같아야한다.
-  res.render("restaurants-detail", { rid: restaurantId });
+  const filePath = path.join(__dirname, "data", "restaurants.json"); // 파일 저장된 위치
+
+  const fileData = fs.readFileSync(filePath); // 파일 읽기
+  const storeRestaurants = JSON.parse(fileData); // JSON으로 전환
+
+  for (const restaurant of storeRestaurants) {
+    if (restaurant.id === restaurantId) {
+      return res.render("restaurants-detail", { restaurant: restaurant });
+    }
+  }
 });
 
 app.get("/recommend", (req, res) => {
@@ -46,6 +56,8 @@ app.get("/recommend", (req, res) => {
 
 app.post("/recommend", (req, res) => {
   const restaurant = req.body; //요청
+  restaurant.id = uuid.v4();
+
   const filePath = path.join(__dirname, "data", "restaurants.json"); // 파일 저장된 위치
 
   const fileData = fs.readFileSync(filePath); // 파일 읽기
