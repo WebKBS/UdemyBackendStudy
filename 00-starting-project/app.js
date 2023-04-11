@@ -46,6 +46,10 @@ app.get("/restaurants/:id", (req, res) => {
       return res.render("restaurants-detail", { restaurant: restaurant });
     }
   }
+
+  // else 문에서 사용하는건 좋지않다.
+  // 원하는 :id 페이지를 찾지 못하면 404페이지로 이동한다.
+  return res.render("404");
 });
 
 app.get("/recommend", (req, res) => {
