@@ -49,7 +49,7 @@ app.get("/restaurants/:id", (req, res) => {
 
   // else 문에서 사용하는건 좋지않다.
   // 원하는 :id 페이지를 찾지 못하면 404페이지로 이동한다.
-  return res.render("404");
+  return res.status(404).render("404");
 });
 
 app.get("/recommend", (req, res) => {
@@ -83,6 +83,16 @@ app.get("/about", (req, res) => {
   // const htmlFilePath = path.join(__dirname, "views", "about.html");
   // res.sendFile(htmlFilePath);
   res.render("about");
+});
+
+// 한번에 Error페이지를 만드는 방법
+app.use((req, res) => {
+  //res.status("404").render("404"); // 404 상태일 때,
+  res.status(404).render("404"); // 한번에 전체
+});
+
+app.use((error, req, res, next) => {
+  res.status(500).render("500"); // 500은 서버측 오류 코드
 });
 
 app.listen(3000);
