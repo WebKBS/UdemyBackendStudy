@@ -9,12 +9,24 @@ const router = express.Router();
 router.get("/restaurants", (req, res) => {
   // const htmlFilePath = path.join(__dirname, "views", "restaurants.html");
   // res.sendFile(htmlFilePath);
+  let order = req.query.order;
+  let nextOrder = "desc";
+
+  if (order !== "asc" && order !== "desc") {
+    order = "asc";
+  }
+  if (order === "desc") {
+    nextOrder = "asc";
+  }
 
   const storeRestaurants = resData.getStoredRestaurant();
 
   // json name으로 순서 정렬하는 방법
   storeRestaurants.sort((resA, resB) => {
-    if (resA.name > resB.name) {
+    if (
+      (order === "asc" && resA.name > resB.name) ||
+      (order === "desc " && resB.name > resA.name)
+    ) {
       return 1;
     }
     return -1;
@@ -23,6 +35,7 @@ router.get("/restaurants", (req, res) => {
   res.render("restaurants", {
     numberOfRestaurants: storeRestaurants.length,
     restaurants: storeRestaurants,
+    nextOrder: nextOrder,
   });
 });
 
