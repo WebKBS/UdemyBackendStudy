@@ -15,11 +15,12 @@
 
       <p>Find your next favorite restaurants with help of our other users!</p>
       <p>We found <%= numberOfRestaurants %> restaurant</p>
+      <button type="button">순서 변경</button>
       <ul id="restaurants-list">
         <% for(const restaurant of restaurants){ %> <%-
         include('includes/restaurants/restaurant-item', {restaurant:
-        <!-- 반드시 키값을 넣어줘야한다. -->
         restaurant}) %> <% } %>
+        <!-- 반드시 키값을 넣어줘야한다. -->
       </ul>
       <%}%>
     </main>

@@ -12,6 +12,14 @@ router.get("/restaurants", (req, res) => {
 
   const storeRestaurants = resData.getStoredRestaurant();
 
+  // json name으로 순서 정렬하는 방법
+  storeRestaurants.sort((resA, resB) => {
+    if (resA.name > resB.name) {
+      return 1;
+    }
+    return -1;
+  });
+
   res.render("restaurants", {
     numberOfRestaurants: storeRestaurants.length,
     restaurants: storeRestaurants,
