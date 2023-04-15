@@ -1,7 +1,6 @@
 const fs = require("fs/promises");
-const { addSyntheticLeadingComment } = require("typescript");
 
-const readFile = () => {
+const readFile = async () => {
   // fs.readFile("data.txt", (error, fileData) => {
   //if(error){
   //
@@ -10,14 +9,9 @@ const readFile = () => {
   //   console.log(fileData.toString()); // 읽은 파일을 문자열로 바꿔준다.
   // });
 
-  fs.readFile("data.txt")
-    .then((fileData) => {
-      console.log(fileData.toString());
-    })
-    .catch((error) => {
-      console.log(error);
-      console.log("파일 누락");
-    });
+  const fileData = await fs.readFile("data.txt");
+
+  console.log(fileData.toString());
 
   console.log("Hi there!");
 };
