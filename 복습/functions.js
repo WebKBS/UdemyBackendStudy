@@ -27,3 +27,10 @@ function sum(...numbers) {
 const inputNumvers = [1, 2, 5, 6, 87, 22];
 
 console.log(sum(...inputNumvers));
+
+const obj = {
+  name: "kim",
+  age: 30,
+};
+
+console.log(obj);
