@@ -37,4 +37,33 @@ router.post("/posts", async (req, res) => {
   res.redirect("/posts");
 });
 
+router.get("/posts/:id", async (req, res) => {
+  const query = `
+    SELECT posts.*, authors.name AS author_name, authors.email AS author_email FROM posts
+    INNER JOIN authors ON posts.author_id = authors.id
+    WHERE posts.id = ?
+  `;
+
+  const [posts] = await db.query(query, [req.params.id]);
+
+  // db내용이 없을때 404페이지로 이동
+  if (!posts || posts.length === 0) {
+    return res.status(404).render("404");
+  }
+
+  const postData = {
+    ...posts[0],
+    date: posts[0].date.toISOString(),
+    humanReadableDate: posts[0].date.toLocaleDateString("ko", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+  };
+  console.log(postData.humanReadableDate);
+
+  res.render("post-detail", { post: postData });
+});
+
 module.exports = router;
