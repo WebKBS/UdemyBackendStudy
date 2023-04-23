@@ -80,4 +80,26 @@ router.get("/posts/:id/edit", async (req, res) => {
   res.render("update-post", { post: posts[0] });
 });
 
+router.post("/posts/:id/edit", async (req, res) => {
+  const query = `
+   UPDATE posts SET title = ?, summary = ?, body = ? 
+   WHERE id = ?
+  `;
+
+  await db.query(query, [
+    req.body.title,
+    req.body.summary,
+    req.body.content,
+    req.params.id,
+  ]); // 반드시 db순서대로 해야함
+
+  res.redirect("/posts");
+});
+
+router.post("/posts/:id/delete", async (req, res) => {
+  await db.query("DELETE FROM posts WHERE id = ?", [req.params.id]);
+
+  res.redirect("/posts");
+});
+
 module.exports = router;
