@@ -61,9 +61,23 @@ router.get("/posts/:id", async (req, res) => {
       day: "numeric",
     }),
   };
-  console.log(postData.humanReadableDate);
 
   res.render("post-detail", { post: postData });
+});
+
+router.get("/posts/:id/edit", async (req, res) => {
+  const query = `
+    SELECT * FROM posts WHERE id = ?
+  `;
+
+  const [posts] = await db.query(query, [req.params.id]);
+
+  // db내용이 없을때 404페이지로 이동
+  if (!posts || posts.length === 0) {
+    return res.status(404).render("404");
+  }
+
+  res.render("update-post", { post: posts[0] });
 });
 
 module.exports = router;
