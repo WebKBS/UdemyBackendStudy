@@ -71,4 +71,37 @@ router.get("/posts/:id", async (req, res) => {
   res.render("post-detail", { post: post });
 });
 
+router.get("/posts/:id/edit", async (req, res) => {
+  const postId = req.params.id;
+  const post = await db
+    .getDb()
+    .collection("posts")
+    .findOne({ _id: new ObjectId(postId) }, { title: 1, summary: 1, body: 1 });
+
+  if (!post) {
+    return res.status(404).render("404");
+  }
+  res.render("update-post", { post: post });
+});
+
+router.post("/posts/:id/edit", async (req, res) => {
+  const postId = new ObjectId(req.params.id);
+  const result = await db
+    .getDb()
+    .collection("posts")
+    .updateOne(
+      { _id: postId },
+      {
+        $set: {
+          title: req.body.title,
+          summary: req.body.summary,
+          body: req.body.content,
+          date: new Date(), // 날짜를 새로 추가하고 싶을때
+        },
+      }
+    );
+
+  res.redirect("/posts");
+});
+
 module.exports = router;
