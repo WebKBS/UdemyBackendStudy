@@ -29,18 +29,28 @@ const createCommentsList = (comments) => {
 const fetchCommentsForPost = async (event) => {
   const postId = loadCommentsBtnElement.dataset.postid;
 
-  const response = await fetch(`/posts/${postId}/comments`);
-  const responseData = await response.json();
+  try {
+    const response = await fetch(`/posts/${postId}/comments`);
 
-  console.log(responseData.comments);
+    if (!response.ok) {
+      alert("fetch 실패!!");
+      return;
+    }
 
-  if (responseData.comments && responseData.comments.length > 0) {
-    const commentsListElement = createCommentsList(responseData);
-    commentsSectionElement.innerHTML = "";
-    commentsSectionElement.appendChild(commentsListElement);
-  } else {
-    commentsSectionElement.firstElementChild.textContent =
-      "코멘트가 없습니다! 코멘트를 등록해주세요";
+    const responseData = await response.json();
+
+    console.log(responseData.comments);
+
+    if (responseData.comments && responseData.comments.length > 0) {
+      const commentsListElement = createCommentsList(responseData);
+      commentsSectionElement.innerHTML = "";
+      commentsSectionElement.appendChild(commentsListElement);
+    } else {
+      commentsSectionElement.firstElementChild.textContent =
+        "코멘트가 없습니다! 코멘트를 등록해주세요";
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -53,15 +63,26 @@ const saveComment = async (event) => {
 
   const comment = { title: enteredTitle, text: enteredText };
 
-  const response = await fetch(`/posts/${postId}/comments`, {
-    method: "POST",
-    body: JSON.stringify(comment),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  // try 서버측 오류 검사
+  try {
+    const response = await fetch(`/posts/${postId}/comments`, {
+      method: "POST",
+      body: JSON.stringify(comment),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  fetchCommentsForPost();
+    // ok 응답측 오류 검사
+    if (response.ok) {
+      fetchCommentsForPost();
+    } else {
+      alert("코멘트 전송에 실패했습니다!!");
+    }
+  } catch (error) {
+    console.log(error);
+    alert("request 실패!!");
+  }
 };
 
 loadCommentsBtnElement.addEventListener("click", fetchCommentsForPost);
