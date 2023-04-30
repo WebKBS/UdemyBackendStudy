@@ -32,15 +32,20 @@ const fetchCommentsForPost = async (event) => {
   const response = await fetch(`/posts/${postId}/comments`);
   const responseData = await response.json();
 
-  //console.log(responseData.comments);
+  console.log(responseData.comments);
 
-  const commentsListElement = createCommentsList(responseData);
-  commentsSectionElement.innerHTML = "";
-  commentsSectionElement.appendChild(commentsListElement);
+  if (responseData.comments && responseData.comments.length > 0) {
+    const commentsListElement = createCommentsList(responseData);
+    commentsSectionElement.innerHTML = "";
+    commentsSectionElement.appendChild(commentsListElement);
+  } else {
+    commentsSectionElement.firstElementChild.textContent =
+      "코멘트가 없습니다! 코멘트를 등록해주세요";
+  }
 };
 
 // post
-const saveComment = (event) => {
+const saveComment = async (event) => {
   event.preventDefault();
   const postId = commentsFormElement.dataset.postid;
   const enteredTitle = commentTitleElement.value;
@@ -48,13 +53,15 @@ const saveComment = (event) => {
 
   const comment = { title: enteredTitle, text: enteredText };
 
-  fetch(`/posts/${postId}/comments`, {
+  const response = await fetch(`/posts/${postId}/comments`, {
     method: "POST",
     body: JSON.stringify(comment),
     headers: {
       "Content-Type": "application/json",
     },
   });
+
+  fetchCommentsForPost();
 };
 
 loadCommentsBtnElement.addEventListener("click", fetchCommentsForPost);
