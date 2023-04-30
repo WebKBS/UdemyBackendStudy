@@ -23,6 +23,30 @@ router.post("/signup", async function (req, res) {
   const enteredConfirmEmail = userData["confirm-email"];
   const enteredPassword = userData.password;
 
+  // 유효성 추가
+  if (
+    !enteredEmail ||
+    !enteredConfirmEmail ||
+    !enteredPassword ||
+    enteredPassword.trim() < 6 ||
+    enteredEmail !== enteredConfirmEmail ||
+    !enteredEmail.includes("@")
+  ) {
+    alert("유효성 실패!!");
+    return res.redirect("/signup");
+  }
+
+  // 이미 이메일이 등록된 유저가 있을 경우 리턴
+  const existingUser = await db
+    .getDb()
+    .collection("users")
+    .findOne({ email: enteredEmail });
+
+  if (existingUser) {
+    console.log("이미 사용중인 유저입니다.");
+    return res.redirect("/signup");
+  }
+
   const hashedPassword = await bcrypt.hash(enteredPassword, 12);
 
   console.log(userData);
