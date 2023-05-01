@@ -101,7 +101,6 @@ router.post("/login", async function (req, res) {
 });
 
 router.get("/admin", function (req, res) {
-
   // 사용자 session이 isAuthenticated가 아니라면
   if (!req.session.isAuthenticated) {
     // if(!req.session.user) user를 검색할때 대체 가능함
@@ -110,6 +109,10 @@ router.get("/admin", function (req, res) {
   res.render("admin");
 });
 
-router.post("/logout", function (req, res) {});
+router.post("/logout", function (req, res) {
+  req.session.user = null;
+  req.session.isAuthenticated = false;
+  res.redirect("/");
+});
 
 module.exports = router;
