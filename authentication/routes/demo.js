@@ -10,7 +10,23 @@ router.get("/", function (req, res) {
 });
 
 router.get("/signup", async function (req, res) {
-  res.render("signup");
+  let sessionInputData = req.session.inputData;
+
+  // 세션의 사용자 데이터 검증
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      email: "",
+      confirmEmail: "",
+      password: "",
+    };
+  }
+
+  // 새로고침이나 다른 페이지 이동후 inputData를 초기화 한다. (세션 초기화)
+  req.session.inputData = null;
+
+  // inputData 내보내기
+  res.render("signup", { inputData: sessionInputData });
 });
 
 router.get("/login", function (req, res) {
@@ -32,8 +48,20 @@ router.post("/signup", async function (req, res) {
     enteredEmail !== enteredConfirmEmail ||
     !enteredEmail.includes("@")
   ) {
-    alert("유효성 실패!!");
-    return res.redirect("/signup");
+    req.session.inputData = {
+      hasError: true,
+      message: "잘못된 입력입니다.",
+      email: enteredEmail,
+      confirmEmail: enteredConfirmEmail,
+      password: enteredPassword,
+    };
+
+    req.session.save(function () {
+      return res.redirect("/signup");
+    });
+
+    // 서버 충돌하지 않기 위해서 여기서 리턴해줘야한다.
+    return;
   }
 
   // 이미 이메일이 등록된 유저가 있을 경우 리턴
