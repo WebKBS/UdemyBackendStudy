@@ -88,11 +88,25 @@ router.post("/login", async function (req, res) {
     return res.redirect("/login");
   }
 
+  // 사용자 세션 등록
+  req.session.user = { id: existingUser._id, email: existingUser.email };
+  req.session.isAuthenticated = true;
+  req.session.save(function () {
+    // session 저장 후 redirect함
+    console.log("세션 저장 성공!");
+    res.redirect("/admin");
+  });
+
   console.log("로그인 성공!!");
-  res.redirect("/admin");
 });
 
 router.get("/admin", function (req, res) {
+
+  // 사용자 session이 isAuthenticated가 아니라면
+  if (!req.session.isAuthenticated) {
+    // if(!req.session.user) user를 검색할때 대체 가능함
+    return res.status(401).render("401");
+  }
   res.render("admin");
 });
 

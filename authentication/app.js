@@ -31,6 +31,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
+    // cookie: { // 쿠키 시간 설정
+    //   maxAge: 30 * 24 * 60 * 60 * 1000, // 한달
+    // },
   })
 );
 
