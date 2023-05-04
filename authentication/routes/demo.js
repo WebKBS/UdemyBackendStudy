@@ -31,7 +31,18 @@ router.get("/signup", async function (req, res) {
 });
 
 router.get("/login", function (req, res) {
-  res.render("login");
+  let sessionInputData = req.session.inputData;
+
+  // 세션의 사용자 데이터 검증
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      email: "",
+      confirmEmail: "",
+      password: "",
+    };
+  }
+  res.render("login", { inputData: sessionInputData });
 });
 
 router.post("/signup", async function (req, res) {
@@ -72,8 +83,20 @@ router.post("/signup", async function (req, res) {
     .findOne({ email: enteredEmail });
 
   if (existingUser) {
-    console.log("이미 사용중인 유저입니다.");
-    return res.redirect("/signup");
+    req.session.inputData = {
+      hasError: true,
+      message: "이미 사용중인 유저입니다.",
+      email: enteredEmail,
+      confirmEmail: enteredConfirmEmail,
+      password: enteredPassword,
+    };
+
+    req.session.save(function () {
+      console.log("이미 사용중인 유저입니다.");
+      res.redirect("/signup");
+    });
+
+    return;
   }
 
   const hashedPassword = await bcrypt.hash(enteredPassword, 12);
@@ -102,8 +125,19 @@ router.post("/login", async function (req, res) {
 
   // 유저가 없는 경우
   if (!existingUser) {
+    req.session.inputData = {
+      hasError: true,
+      message: "로그인할 수 없습니다.",
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+
     console.log("로그인 할수 없습니다.");
-    return res.redirect("/login");
+    req.session.save(function () {
+      res.redirect("/login");
+    });
+
+    return;
   }
 
   // bcrypt를 사용해서 password가 일치하는지 검증한다.
@@ -113,8 +147,19 @@ router.post("/login", async function (req, res) {
   );
 
   if (!passwordsAreEqual) {
-    console.log("패스워드가 다릅니다!!");
-    return res.redirect("/login");
+    req.session.inputData = {
+      hasError: true,
+      message: "패스워드가 다릅니다!!",
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+
+    req.session.save(function () {
+      console.log("패스워드가 다릅니다!!");
+      res.redirect("/login");
+    });
+
+    return;
   }
 
   // 사용자 세션 등록
