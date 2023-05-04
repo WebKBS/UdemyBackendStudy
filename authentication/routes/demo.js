@@ -168,7 +168,7 @@ router.post("/login", async function (req, res) {
   req.session.save(function () {
     // session 저장 후 redirect함
     console.log("세션 저장 성공!");
-    res.redirect("/admin");
+    res.redirect("/");
   });
 
   console.log("로그인 성공!!");
@@ -176,7 +176,7 @@ router.post("/login", async function (req, res) {
 
 router.get("/admin", async function (req, res) {
   // 사용자 session이 isAuthenticated가 아니라면
-  if (!req.session.isAuthenticated) {
+  if (!res.locals.isAuth) {
     // if(!req.session.user) user를 검색할때 대체 가능함
     return res.status(401).render("401");
   }
@@ -186,7 +186,7 @@ router.get("/admin", async function (req, res) {
     .collection("users")
     .findOne({ _id: req.session.user.id });
   // admin 여부 확인
-  if (!user || !user.isAdmin) {
+  if (!res.locals.isAdmin) {
     return res.status(403).render("403");
   }
 
@@ -194,7 +194,7 @@ router.get("/admin", async function (req, res) {
 });
 router.get("/profile", function (req, res) {
   // 사용자 session이 isAuthenticated가 아니라면
-  if (!req.session.isAuthenticated) {
+  if (!res.locals.isAuth) {
     // if(!req.session.user) user를 검색할때 대체 가능함
     return res.status(401).render("401");
   }
