@@ -140,6 +140,7 @@ router.get("/admin", async function (req, res) {
     .getDb()
     .collection("users")
     .findOne({ _id: req.session.user.id });
+  // admin 여부 확인
   if (!user || !user.isAdmin) {
     return res.status(403).render("403");
   }
