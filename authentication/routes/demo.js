@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 
 const db = require("../data/database");
+const { use } = require("bcrypt/promises");
 
 const router = express.Router();
 
@@ -128,13 +129,30 @@ router.post("/login", async function (req, res) {
   console.log("로그인 성공!!");
 });
 
-router.get("/admin", function (req, res) {
+router.get("/admin", async function (req, res) {
   // 사용자 session이 isAuthenticated가 아니라면
   if (!req.session.isAuthenticated) {
     // if(!req.session.user) user를 검색할때 대체 가능함
     return res.status(401).render("401");
   }
+
+  const user = await db
+    .getDb()
+    .collection("users")
+    .findOne({ _id: req.session.user.id });
+  if (!user || !user.isAdmin) {
+    return res.status(403).render("403");
+  }
+
   res.render("admin");
+});
+router.get("/profile", function (req, res) {
+  // 사용자 session이 isAuthenticated가 아니라면
+  if (!req.session.isAuthenticated) {
+    // if(!req.session.user) user를 검색할때 대체 가능함
+    return res.status(401).render("401");
+  }
+  res.render("profile");
 });
 
 router.post("/logout", function (req, res) {
