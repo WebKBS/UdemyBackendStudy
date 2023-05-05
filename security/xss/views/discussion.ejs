@@ -7,9 +7,11 @@
     <h1>Discuss!</h1>
     <section>
       <ol>
+        <!-- ejs에서는 <%- %> 태그를 사용하면 HTML 파일이 파싱된다. -->
+        <!-- 그러므로 <%=  %> 등호를 사용해야 문자열로 되고 사용자 입력부분은 꼭 반드시 등호를 이용해야한다. (이스케이프 처리) -->
         <% for (const comment of comments) { %>
           <li>
-            <%- comment.text %>
+            <%= comment.text %>
           </li>
         <% } %>
       </ol>
