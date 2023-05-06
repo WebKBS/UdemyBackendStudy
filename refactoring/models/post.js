@@ -1,17 +1,48 @@
 const db = require("../data/database");
+const mongodb = require("mongodb");
+
+const ObjectId = mongodb.ObjectId;
 
 class Post {
   constructor(title, content, id) {
     this.title = title;
     this.content = content;
-    this.id = id;
+
+    if (id) {
+      this.id = new ObjectId(id);
+    }
   }
 
   async save() {
-    const result = await db.getDb().collection("posts").insertOne({
-      title: this.title,
-      content: this.content,
-    });
+    let result;
+    // 만약 id가 있다면?
+    if (this.id) {
+      result = await db
+        .getDb()
+        .collection("posts")
+        .updateOne(
+          { _id: this.id },
+          { $set: { title: this.title, content: this.content } }
+        );
+    } else {
+      result = await db.getDb().collection("posts").insertOne({
+        title: this.title,
+        content: this.content,
+      });
+    }
+
+    return result;
+  }
+
+  async delete() {
+    // id가 없다면
+    if (!this.id) {
+      return;
+    }
+    const result = await db
+      .getDb()
+      .collection("posts")
+      .deleteOne({ _id: this.id });
 
     return result;
   }
