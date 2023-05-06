@@ -1,7 +1,5 @@
 const express = require("express");
-const Post = require("../models/post");
 const blogControllers = require("../controllers/post-controllers");
-
 const router = express.Router();
 
 router.get("/", blogControllers.getHome);

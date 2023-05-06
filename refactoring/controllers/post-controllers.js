@@ -1,4 +1,6 @@
 const Post = require("../models/post");
+const validationSession = require("../util/validation-session");
+const validation = require("../util/validation");
 
 function getHome(req, res) {
   res.render("welcome", { csrfToken: req.csrfToken() });
@@ -11,17 +13,10 @@ async function getAdmin(req, res) {
 
   const posts = await Post.fetchAll();
 
-  let sessionInputData = req.session.inputData;
-
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: "",
-      content: "",
-    };
-  }
-
-  req.session.inputData = null;
+  sessionInputData = validationSession.getSessionErrorData(req, {
+    title: "",
+    content: "",
+  });
 
   res.render("admin", {
     posts: posts,
@@ -34,20 +29,20 @@ async function createPost(req, res) {
   const enteredTitle = req.body.title;
   const enteredContent = req.body.content;
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Invalid input - please check your data.",
-      title: enteredTitle,
-      content: enteredContent,
-    };
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashErrorToSession(
+      req,
+      {
+        message: "Invalid input - please check your data",
+        title: enteredTitle,
+        content: enteredContent,
+      },
+      function () {
+        //util session의 action으로 전달된 함수
+        res.redirect("/admin");
+      }
+    );
 
-    res.redirect("/admin");
     return; // or return res.redirect('/admin'); => Has the same effect
   }
 
@@ -65,17 +60,10 @@ async function getSinglePost(req, res) {
     return res.render("404"); // 404.ejs is missing at this point - it will be added later!
   }
 
-  let sessionInputData = req.session.inputData;
-
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: post.title,
-      content: post.content,
-    };
-  }
-
-  req.session.inputData = null;
+  sessionInputData = validationSession.getSessionErrorData(req, {
+    title: post.title,
+    content: post.content,
+  });
 
   res.render("single-post", {
     post: post,
@@ -88,20 +76,20 @@ async function updatePost(req, res) {
   const enteredTitle = req.body.title;
   const enteredContent = req.body.content;
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Invalid input - please check your data.",
-      title: enteredTitle,
-      content: enteredContent,
-    };
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashErrorToSession(
+      req,
+      {
+        message: "Invalid input - please check your data.",
+        title: enteredTitle,
+        content: enteredContent,
+      },
+      function () {
+        //util session의 action으로 전달된 함수
+        res.redirect(`/posts/${req.params.id}/edit`);
+      }
+    );
 
-    res.redirect(`/posts/${req.params.id}/edit`);
     return;
   }
 
