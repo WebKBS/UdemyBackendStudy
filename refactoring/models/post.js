@@ -13,6 +13,26 @@ class Post {
     }
   }
 
+  // static은 인스턴스화 되지 않고, 자체 메서드 호출이 가능하다. * 정적 메서드 정의
+  static async fetchAll() {
+    const posts = await db.getDb().collection("posts").find().toArray();
+    return posts;
+  }
+
+  async fetch() {
+    if (!this.id) {
+      return;
+    }
+
+    const postDocument = await db
+      .getDb()
+      .collection("posts")
+      .findOne({ _id: this.id });
+
+    this.title = postDocument.title;
+    this.content = postDocument.content;
+  }
+
   async save() {
     let result;
     // 만약 id가 있다면?
